@@ -20,13 +20,14 @@ public class App
         Session session = sessionFactory.getCurrentSession();
 
         try {
-            session.beginTransaction();
+           session.beginTransaction();
 
-           Person person = session.get(Person.class, 4);
-           Item item = session.get(Item.class, 1);
-           item.setOwner(person);
-           person.getItems().add(item);
-           item.getOwner().getItems().remove(item);
+           Person person = new Person("Test cascading", 30);
+           person.addItem(new Item("Item 1"));
+           person.addItem(new Item("Item 2"));
+           person.addItem(new Item("Item 3"));
+
+           session.persist(person);
 
            session.getTransaction().commit();
 
