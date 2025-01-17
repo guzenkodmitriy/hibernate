@@ -3,11 +3,10 @@ package com.guzenko.springcourse.model;
 import jakarta.persistence.*;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 
 @Entity
-public class Actor {
+@Table(name = "Person")
+public class Person {
 
     @Id
     @Column(name = "id")
@@ -20,26 +19,14 @@ public class Actor {
     @Column(name = "age")
     private int age;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Actor_Movie",
-            joinColumns = @JoinColumn(name = "actor_id"),
-            inverseJoinColumns = @JoinColumn(name = "movie_id")
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    private List<Item> items;
 
-    )
-    private List<Movie> movies;
+    public Person() {
 
-    public List<Movie> getMovies() {
-        return movies;
     }
 
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
-    }
-
-    public Actor() {}
-
-    public Actor(String name, int age) {
+    public Person(String name, int age) {
         this.name = name;
         this.age = age;
     }
@@ -70,22 +57,18 @@ public class Actor {
 
     @Override
     public String toString() {
-        return "Actor{" +
+        return "Person{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Actor actor = (Actor) o;
-        return id == actor.id && age == actor.age && Objects.equals(name, actor.name);
+    public List<Item> getItems() {
+        return items;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, age);
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 }
