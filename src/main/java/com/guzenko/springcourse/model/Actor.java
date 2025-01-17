@@ -1,13 +1,13 @@
 package com.guzenko.springcourse.model;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Cascade;
 
-
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 @Entity
-@Table(name = "Person")
-public class Person {
+public class Actor {
 
     @Id
     @Column(name = "id")
@@ -20,15 +20,26 @@ public class Person {
     @Column(name = "age")
     private int age;
 
-    @OneToOne(mappedBy = "person")
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    private Passport passport;
+    @ManyToMany
+    @JoinTable(
+            name = "Actor_Movie",
+            joinColumns = @JoinColumn(name = "actor_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id")
 
-    public Person() {
+    )
+    private List<Movie> movies;
 
+    public List<Movie> getMovies() {
+        return movies;
     }
 
-    public Person(String name, int age) {
+    public void setMovies(List<Movie> movies) {
+        this.movies = movies;
+    }
+
+    public Actor() {}
+
+    public Actor(String name, int age) {
         this.name = name;
         this.age = age;
     }
@@ -57,22 +68,24 @@ public class Person {
         this.age = age;
     }
 
-    public Passport getPassport() {
-        return passport;
-    }
-
-    public void setPassport(Passport passport) {
-        this.passport = passport;
-        passport.setPerson(this);
-    }
-
     @Override
     public String toString() {
-        return "Person{" +
+        return "Actor{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Actor actor = (Actor) o;
+        return id == actor.id && age == actor.age && Objects.equals(name, actor.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, age);
+    }
 }
